@@ -1,81 +1,54 @@
-import { createRoot } from "react-dom/client";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
-import { attachTwindStyle } from "@src/shared/style/twind";
-import { elements, ids, selectors } from "@src/pages/content/elements";
-import CreateLeadBtn from "@src/pages/content/components/CreateLeadBtn";
-import { cleanLabel, setStorageValue } from "@src/pages/content/utils";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import { EmailDetails } from "@root/src/pages/content/types";
-
+import { classNames, getElement, selectors } from "./elements";
 refreshOnUpdate("pages/content");
+import { attachTwindStyle } from "@src/shared/style/twind";
+import { ReactNode } from "react";
+import { createRoot } from "react-dom/client";
+import IconName from "./components/IconName";
 
-let initializedTabId = "";
-
-chrome.runtime.onMessage.addListener(({ tabId, token }) => {
-  setStorageValue({ token });
-  init(tabId);
+chrome.runtime.onMessage.addListener(() => {
+  setTimeout(() => {
+    init();
+  }, 1000);
 });
 
-const init = async (tabId) => {
-  if (tabId !== initializedTabId) {
-    const { showDetailsBtn, leadCreatorEl } = elements();
+const attchShadowDom = (node: ReactNode) => {
+  const root = document.createElement("div");
+  root.classList.add(classNames.iconName);
+  const shadowRoot = root.attachShadow({ mode: "open" });
 
-    if (leadCreatorEl) {
-      leadCreatorEl.remove();
-    }
-    showDetailsBtn.click();
-    showDetailsBtn.click();
+  const rootIntoShadow = document.createElement("div");
+  shadowRoot.appendChild(rootIntoShadow);
 
-    const { detailsCard, avatar } = elements();
+  attachTwindStyle(rootIntoShadow, shadowRoot);
+  createRoot(rootIntoShadow).render(node);
 
-    const tableRows = detailsCard.querySelectorAll(selectors.tableRow);
+  return { root, shadowRoot };
+};
 
-    const emailDetails = {} as EmailDetails;
-    emailDetails.avatar = avatar?.getAttribute("src");
-    tableRows?.forEach((row) => {
-      const tds = row.querySelectorAll("td");
-      if (tds.length === 2) {
-        const label = cleanLabel(tds[0]?.innerText);
+const init = async () => {
+  const wrapper = getElement(selectors.wrapper);
 
-        const hoverCardEls = tds[1].querySelectorAll(selectors.hovercardId);
+  if (wrapper) {
+    const added = getElement(selectors.nameDiv);
 
-        let value = tds[1]?.innerText;
-        if (hoverCardEls.length > 0) {
-          //@ts-ignore
-          value = {
-            email: hoverCardEls[0].getAttribute("email"),
-            name: hoverCardEls[0].getAttribute("name"),
-          };
-        }
-        if (label && value) {
-          emailDetails[label] = value;
+    if (!added) {
+      const valueContaier = wrapper.querySelector(
+        selectors.valueContainer
+      ) as HTMLTextAreaElement;
+
+      const match = valueContaier?.value?.match(/"([^"]+)"/);
+
+      if (match) {
+        const value = match[1];
+        if (value) {
+          const codeSample = getElement(selectors.codeSampleDiv);
+
+          const { root } = attchShadowDom(<IconName value={value} />);
+
+          codeSample.appendChild(root);
         }
       }
-    });
-
-    const root = document.createElement("div");
-    root.id = ids.shadowRoot;
-    const rootIntoShadow = document.createElement("div");
-    rootIntoShadow.id = ids.leadCreator;
-    const shadowRoot = root.attachShadow({ mode: "open" });
-
-    shadowRoot.appendChild(rootIntoShadow);
-
-    const cache = createCache({
-      container: shadowRoot,
-      key: "test",
-      prepend: false,
-    });
-
-    attachTwindStyle(rootIntoShadow, shadowRoot);
-    createRoot(rootIntoShadow).render(
-      <CacheProvider value={cache}>
-        <CreateLeadBtn emailDetails={emailDetails} />
-      </CacheProvider>
-    );
-    document.body.append(root);
-
-    initializedTabId = tabId;
+    }
   }
 };

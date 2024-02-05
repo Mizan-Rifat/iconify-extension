@@ -9,12 +9,6 @@ const manifest: chrome.runtime.ManifestV3 = {
   version: packageJson.version,
   description: packageJson.description,
   permissions: ["storage", "tabs", "cookies"],
-  host_permissions: [
-    "*://localhost:8000/*",
-    "https://api-staging.onesuite.io/*",
-    "https://stage-api.post.market/api/*",
-    "https://staging.onesuite.io/",
-  ],
   background: {
     service_worker: "src/pages/background/index.js",
     type: "module",
@@ -27,12 +21,14 @@ const manifest: chrome.runtime.ManifestV3 = {
   },
   content_scripts: [
     {
-      matches: ["https://mail.google.com/*", "https://mail.google.com/*"],
+      // matches: ["<all_urls>"],
+      matches: ["https://icon-sets.iconify.design/*"],
       js: ["src/pages/content/index.js"],
       // KEY for cache invalidation
       css: ["assets/css/contentStyle<KEY>.chunk.css"],
     },
   ],
+  host_permissions: ["http://*/*", "https://*/*"],
   web_accessible_resources: [
     {
       resources: [

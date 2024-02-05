@@ -1,7 +1,7 @@
 {
-  "name": "lead-generator",
+  "name": "iconify",
   "version": "0.0.1",
-  "description": "Lead generator",
+  "description": "Iconify icon copy",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -20,20 +20,11 @@
   },
   "type": "module",
   "dependencies": {
-    "@emotion/cache": "^11.11.0",
-    "@emotion/react": "^11.11.3",
-    "axios": "^1.6.7",
     "classnames": "^2.3.2",
     "construct-style-sheets-polyfill": "^3.1.0",
-    "crypto-js": "^4.2.0",
     "react": "18.2.0",
     "react-contenteditable": "^3.3.7",
-    "react-dom": "18.2.0",
-    "react-hook-form": "^7.46.2",
-    "react-select": "^5.7.4",
-    "react-toastify": "^10.0.4",
-    "swr": "^2.2.4",
-    "tailwind-toastify": "^1.0.8"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.5.0",

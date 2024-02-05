@@ -1,34 +1,25 @@
 type Selectors = {
-  showDetailsBtn: string;
-  detailsCard: string;
-  hovercardId: string;
-  tableRow: string;
-  tooltipBtns: string;
-  sidebar: string;
-  avatar: string;
-  leadCreatorEl: string;
+  wrapper: string;
+  valueContainer: string;
+  codeSampleDiv: string;
+  nameDiv: string;
 };
 
 type Elements = {
   [K in keyof Selectors]: HTMLElement | null;
 };
 
-export const classNames = {};
-
-export const ids = {
-  leadCreator: "lead-creator",
-  shadowRoot: "shadow-root",
+export const classNames = {
+  iconName: "if--icon-name",
 };
 
+export const ids = {};
+
 export const selectors: Selectors = {
-  showDetailsBtn: '[aria-label="Show details"]',
-  detailsCard: ".ajA.SK",
-  tableRow: "table tr",
-  hovercardId: "[data-hovercard-id]",
-  tooltipBtns: "[data-is-tooltip-wrapper]",
-  sidebar: '[aria-label="Side panel"]',
-  avatar: "img[data-hovercard-id]",
-  leadCreatorEl: `#${ids.leadCreator}`,
+  wrapper: ".icon-page-wrapper",
+  valueContainer: "textarea.short",
+  codeSampleDiv: ".if--icon-code-sample",
+  nameDiv: `.${classNames.iconName}`,
 };
 
 export const getElement: (selector: string) => HTMLElement | null = (
